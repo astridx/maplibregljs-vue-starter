@@ -3,48 +3,44 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { Map, NavigationControl } from 'maplibre-gl'
 import { onMounted } from 'vue'
 
-onMounted(() => {
-  const map = new Map({
-    container: 'map',
-    style: {
-      version: 8,
-      sources: {
-        MIERUNEMAP: {
-          type: 'raster',
-          tiles: ['https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png'],
-          tileSize: 256,
-          attribution:
-            "Maptiles by <a href='http://mierune.co.jp/' target='_blank'>MIERUNE</a>, under CC BY. Data by <a href='http://osm.org/copyright' target='_blank'>OpenStreetMap</a> contributors, under ODbL."
-        }
-      },
-      layers: [
-        {
-          id: 'MIERUNEMAP',
-          type: 'raster',
-          source: 'MIERUNEMAP',
-          minzoom: 0,
-          maxzoom: 18
-        }
-      ]
-    },
-    center: [139.767, 35.681],
-    zoom: 11
-  })
+import '@maplibre/maplibre-gl-compare/dist/maplibre-gl-compare.css'
+import Compare from '@/lib/Compare';
 
-  map.addControl(
-    new NavigationControl({
-      visualizePitch: true
-    })
-  )
+onMounted(() => {
+  var beforeMap = new Map({
+    container: "before",
+    style: "https://demotiles.maplibre.org/style.json",
+    center: [7.221275, 50.326111],
+    zoom: 5,
+  });
+
+  var afterMap = new Map({
+    container: "after",
+    style:
+      "https://vectortiles.geo.admin.ch/styles/ch.swisstopo.leichte-basiskarte.vt/style.json",
+    center: [7.221275, 50.326111],
+    zoom: 5,
+  });
+
+  var container = "#comparison-container";
+
+  var map = new Compare(beforeMap, afterMap, container, {
+  });
 })
 </script>
 
 <template>
-  <div id="map"></div>
+  <div id="comparison-container">
+    <div id="before" class="map"></div>
+    <div id="after" class="map"></div>
+  </div>
 </template>
 
 <style scoped>
-#map {
-  height: 100vh;
+.map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 </style>
